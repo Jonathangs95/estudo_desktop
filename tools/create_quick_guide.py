@@ -116,10 +116,6 @@ note = document.add_paragraph()
 note.add_run("Importante. ").bold = True
 note.add_run("As fontes sao apenas lidas. Copias de trabalho ficam em source_working e as saidas do dashboard ficam em data.")
 
-formula = document.add_paragraph()
-formula.add_run("Regra de HP. ").bold = True
-formula.add_run("Com loja AA: HP_TOTAL - BASE_CLARO - BASE_DESKTOP. Sem loja AA: HP_CIDADE - BASE_DESKTOP. Todos os valores pertencem ao mesmo IBGE da cidade analisada.")
-
 document.add_heading("Arquivos principais", level=1)
 table = document.add_table(rows=1, cols=2)
 table.alignment = WD_TABLE_ALIGNMENT.CENTER
