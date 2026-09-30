@@ -145,7 +145,72 @@ function receptorMatch(item, query, stores=[]){
   ].some(v => String(v || "").toUpperCase().includes(q));
 }
 
-function Sidebar({active, setActive}){
+
+const AUTH_SESSION_KEY = "canal_aa_authenticated";
+
+function LoginScreen({onLogin}){
+  const [usuario, setUsuario] = React.useState("");
+  const [senha, setSenha] = React.useState("");
+  const [error, setError] = React.useState("");
+
+  const submit = e => {
+    e.preventDefault();
+    if(usuario === "canal_aa" && senha === "canal_aa"){
+      try { sessionStorage.setItem(AUTH_SESSION_KEY, "1"); } catch(_err){}
+      setError("");
+      onLogin();
+      return;
+    }
+    setError("Login ou senha incorretos.");
+  };
+
+  return h("div", {className:"login-page"},
+    h("section", {className:"login-card"},
+      h("div", {className:"login-brand"},
+        h("div", {className:"login-brand-badge"}, "AA"),
+        h("span", {className:"login-eyebrow"}, "Canal AA SPI"),
+        h("h1", null, "Estudo Desktop"),
+        h("p", null, "Ambiente de análise de cobertura, mercado e oportunidades do Canal AA."),
+        h("div", {className:"login-brand-line"})
+      ),
+      h("div", {className:"login-form-wrap"},
+        h("div", {className:"login-form-head"},
+          h("span", {className:"login-eyebrow"}, "Acesso restrito"),
+          h("h2", null, "Entrar no relatório"),
+          h("p", null, "Informe seu usuário e senha para acessar a visão principal.")
+        ),
+        h("form", {className:"login-form", onSubmit:submit},
+          h("label", null,
+            h("span", null, "Usuário"),
+            h("input", {
+              type:"text",
+              value:usuario,
+              onChange:e=>setUsuario(e.target.value),
+              autoComplete:"username",
+              autoFocus:true,
+              placeholder:"Digite seu usuário"
+            })
+          ),
+          h("label", null,
+            h("span", null, "Senha"),
+            h("input", {
+              type:"password",
+              value:senha,
+              onChange:e=>setSenha(e.target.value),
+              autoComplete:"current-password",
+              placeholder:"Digite sua senha"
+            })
+          ),
+          error ? h("div", {className:"login-error", role:"alert"}, error) : null,
+          h("button", {type:"submit", className:"login-submit"}, "Acessar relatório")
+        ),
+        h("small", {className:"login-footnote"}, "Uso interno • Canal AA")
+      )
+    )
+  );
+}
+
+function Sidebar({active, setActive, onLogout}){
   return h("aside", {className:"sidebar"},
     h("div", {className:"brand"},
       h("div", null, h("b", null, "Estudo Desktop - Canal AA"), h("span", null, "Canal AA SPI"))
@@ -156,6 +221,10 @@ function Sidebar({active, setActive}){
           h("i", null, icon), h("span", null, label)
         )
       )
+    ),
+    h("div", {className:"sidebar-session"},
+      h("div", null, h("b", null, "Canal AA"), h("span", null, "Sessão autenticada")),
+      h("button", {type:"button", onClick:onLogout, title:"Sair"}, "Sair")
     )
   );
 }
@@ -1482,13 +1551,22 @@ function ReceptorDetail({item, data}){
 class App extends React.Component {
   constructor(props){
     super(props);
-    this.state = {data:null, error:null, active:"exec", filters:defaultFilters(), selected:null};
+    let authenticated = false;
+    try { authenticated = sessionStorage.getItem(AUTH_SESSION_KEY) === "1"; } catch(_err){}
+    this.state = {data:null, error:null, active:"exec", filters:defaultFilters(), selected:null, authenticated};
     this.setActive = this.setActive.bind(this);
     this.setFilters = this.setFilters.bind(this);
     this.setSelected = this.setSelected.bind(this);
     this.closeDrawer = this.closeDrawer.bind(this);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.loadData = this.loadData.bind(this);
   }
   componentDidMount(){
+    if(this.state.authenticated) this.loadData();
+  }
+  loadData(){
+    this.setState({error:null});
     fetch("data/desktop-impact-data.json?ts=" + Date.now(), {cache:"no-store"})
       .then(r => {
         if(!r.ok) throw new Error("Falha ao carregar dados derivados");
@@ -1497,6 +1575,15 @@ class App extends React.Component {
       .then(data => this.setState({data}))
       .catch(err => this.setState({error:err.message}));
   }
+  handleLogin(){
+    this.setState({authenticated:true}, () => {
+      if(!this.state.data) this.loadData();
+    });
+  }
+  handleLogout(){
+    try { sessionStorage.removeItem(AUTH_SESSION_KEY); } catch(_err){}
+    this.setState({authenticated:false, data:null, error:null, selected:null, active:"exec", filters:defaultFilters()});
+  }
   setActive(active){
     this.setState({active, selected:null}, () => window.scrollTo({top:0, left:0, behavior:"auto"}));
   }
@@ -1504,7 +1591,8 @@ class App extends React.Component {
   setSelected(selected){ this.setState({selected}); }
   closeDrawer(){ this.setState({selected:null}); }
   render(){
-    const {data, error, active, filters, selected} = this.state;
+    const {data, error, active, filters, selected, authenticated} = this.state;
+    if(!authenticated) return h(LoginScreen, {onLogin:this.handleLogin});
     if(error) return h("div", {className:"loading"}, error);
     if(!data) return h("div", {className:"loading"}, "Carregando dados...");
 
@@ -1526,7 +1614,7 @@ class App extends React.Component {
     if(active === "receptores") page = h(ReceptorsPage, {receptors, stores, onSelect:this.setSelected});
 
     return h("div", {className:"app"},
-      h(Sidebar, {active, setActive:this.setActive}),
+      h(Sidebar, {active, setActive:this.setActive, onLogout:this.handleLogout}),
       h("main", {className:"main"},
         h("div", {className:"content"},
           h(PageHead, {active}),
