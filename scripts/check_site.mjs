@@ -33,6 +33,30 @@ if (/\b[A-Z]:\\/i.test(dataText)) {
 }
 
 const data = JSON.parse(dataText);
+
+function assertNoHp(value, path = "data") {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => assertNoHp(item, `${path}[${index}]`));
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const [key, item] of Object.entries(value)) {
+      if (/(^|_)hp(?:_|$)/i.test(key)) {
+        throw new Error(`Campo HP encontrado no build: ${path}.${key}`);
+      }
+      assertNoHp(item, `${path}.${key}`);
+    }
+    return;
+  }
+  if (typeof value === "string" && /\bHP(?:_|\s)/i.test(value)) {
+    throw new Error(`Texto HP encontrado no build: ${path}`);
+  }
+}
+
+assertNoHp(data);
+if (/\bHP(?:_|\s)/i.test(app) || /hp_(?:total|livre|cidade)/i.test(app)) {
+  throw new Error("Referencia a HP encontrada no app publicado.");
+}
 const expected = {
   desktop_cidades: 173,
   desktop_lojas: 88,
