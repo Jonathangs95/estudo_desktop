@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "format": "concatenated-json",
+  "parts": [
+    "payload/desktop-impact-data.part01.txt",
+    "payload/desktop-impact-data.part02.txt",
+    "payload/desktop-impact-data.part03.txt",
+    "payload/desktop-impact-data.part04.txt",
+    "payload/desktop-impact-data.part05.txt",
+    "payload/desktop-impact-data.part06.txt"
+  ],
+  "desktop_lojas": 88,
+  "desktop_cidades_com_loja": 87
+}
