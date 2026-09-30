@@ -15,21 +15,19 @@
     "vivo_missing_general": 0,
     "desktop_share_null": 1,
     "desktop_base_zero": 1,
-    "aa_hp_total_text_rows": 13,
     "senha_rows": 76527,
     "senha_store_matches": 173,
     "senha_store_unmatched": 10,
     "fluxo_rows_valid": 151,
     "fluxo_store_matches": 151,
-    "fluxo_store_unmatched": 32,
-    "hp_livre_negative_cities": 1
+    "fluxo_store_unmatched": 32
   },
   "issues": {
     "share_desktop_null_rows": [
       {
         "municipio": "PINDORAMA",
         "ibge": 3538105,
-        "base_desktop": 88.0,
+        "base_desktop": 88,
         "status_cobertura": "Sem loja do Canal AA"
       }
     ],
@@ -39,73 +37,6 @@
         "ibge": 3554755,
         "share_desktop": 0.185615,
         "status_cobertura": "Sem loja do Canal AA"
-      }
-    ],
-    "hp_total_text_rows": [
-      {
-        "pdv": "HFQJ",
-        "cidade": "IBITINGA",
-        "ibge": 3519600
-      },
-      {
-        "pdv": "NYA0",
-        "cidade": "BRODOWSKI",
-        "ibge": 3507803
-      },
-      {
-        "pdv": "XK3I",
-        "cidade": "IGARAPAVA",
-        "ibge": 3520103
-      },
-      {
-        "pdv": "DS2Q",
-        "cidade": "MORRO AGUDO",
-        "ibge": 3531902
-      },
-      {
-        "pdv": "4C7D",
-        "cidade": "AGUAI",
-        "ibge": 3500303
-      },
-      {
-        "pdv": "MRKD",
-        "cidade": "BARIRI",
-        "ibge": 3505203
-      },
-      {
-        "pdv": "81DQ",
-        "cidade": "SAO MANUEL",
-        "ibge": 3550100
-      },
-      {
-        "pdv": "P5L1",
-        "cidade": "AURIFLAMA",
-        "ibge": 3504206
-      },
-      {
-        "pdv": "KBV1",
-        "cidade": "ILHABELA",
-        "ibge": 3520400
-      },
-      {
-        "pdv": "1AP6",
-        "cidade": "PITANGUEIRAS",
-        "ibge": 3539509
-      },
-      {
-        "pdv": "282U",
-        "cidade": "SANTA RITA DO PASSA QUATRO",
-        "ibge": 3547502
-      },
-      {
-        "pdv": "PE9P",
-        "cidade": "VIRADOURO",
-        "ibge": 3556800
-      },
-      {
-        "pdv": "L34L",
-        "cidade": "TUPA",
-        "ibge": 3555000
       }
     ],
     "xpto_stores": [
@@ -347,16 +278,6 @@
         "cidade": "BARRINHA",
         "grupo": "HS TELECOM"
       }
-    ],
-    "hp_livre_negative_rows": [
-      {
-        "cidade": "NOVA ODESSA",
-        "ibge": 3533403,
-        "hp_total": 14083.0,
-        "base_claro": 2647.33,
-        "base_desktop": 14531.0,
-        "hp_livre": -3095.0
-      }
     ]
   },
   "method": [
@@ -364,7 +285,6 @@
     "Populacao, shares locais e tecnologias usam BASE_GERAL no grao municipal.",
     "Presenca de loja AA usa BASE_AA; presenca de loja Vivo usa BASE_VIVO; lojas Desktop usam LOJA_DESKTOP.",
     "Shares BL e POS continuam pertencendo a cidade analisada, mesmo quando nao existe loja da operadora.",
-    "HP livre com AA = HP_TOTAL - BASE_CLARO - BASE_DESKTOP. HP livre sem AA = HP_CIDADE - BASE_DESKTOP.",
     "Distancias usam Haversine entre centroides municipais e nao representam rota rodoviaria.",
     "Clusters usam cidades Desktop sem AA no quartil superior de distancia e conexoes de ate 35 km entre centroides.",
     "Contexto regional do cluster lista cidades AA e Vivo a ate 75 km de qualquer cidade integrante."
