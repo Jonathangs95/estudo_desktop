@@ -1,0 +1,372 @@
+{
+  "checks": {
+    "base_aa_rows": 183,
+    "base_desktop_rows": 173,
+    "base_geral_rows": 581,
+    "base_vivo_rows": 154,
+    "aa_unique_pdv": 183,
+    "aa_unique_ibge": 124,
+    "desktop_unique_ibge": 173,
+    "vivo_unique_ibge": 154,
+    "general_unique_ibge": 581,
+    "desktop_atuacao_aa_mismatch": 0,
+    "desktop_missing_general": 0,
+    "aa_missing_general": 0,
+    "vivo_missing_general": 0,
+    "desktop_share_null": 1,
+    "desktop_base_zero": 1,
+    "aa_hp_total_text_rows": 13,
+    "senha_rows": 76527,
+    "senha_store_matches": 173,
+    "senha_store_unmatched": 10,
+    "fluxo_rows_valid": 151,
+    "fluxo_store_matches": 151,
+    "fluxo_store_unmatched": 32,
+    "hp_livre_negative_cities": 1
+  },
+  "issues": {
+    "share_desktop_null_rows": [
+      {
+        "municipio": "PINDORAMA",
+        "ibge": 3538105,
+        "base_desktop": 88.0,
+        "status_cobertura": "Sem loja do Canal AA"
+      }
+    ],
+    "base_desktop_zero_rows": [
+      {
+        "municipio": "TRABIJU",
+        "ibge": 3554755,
+        "share_desktop": 0.185615,
+        "status_cobertura": "Sem loja do Canal AA"
+      }
+    ],
+    "hp_total_text_rows": [
+      {
+        "pdv": "HFQJ",
+        "cidade": "IBITINGA",
+        "ibge": 3519600
+      },
+      {
+        "pdv": "NYA0",
+        "cidade": "BRODOWSKI",
+        "ibge": 3507803
+      },
+      {
+        "pdv": "XK3I",
+        "cidade": "IGARAPAVA",
+        "ibge": 3520103
+      },
+      {
+        "pdv": "DS2Q",
+        "cidade": "MORRO AGUDO",
+        "ibge": 3531902
+      },
+      {
+        "pdv": "4C7D",
+        "cidade": "AGUAI",
+        "ibge": 3500303
+      },
+      {
+        "pdv": "MRKD",
+        "cidade": "BARIRI",
+        "ibge": 3505203
+      },
+      {
+        "pdv": "81DQ",
+        "cidade": "SAO MANUEL",
+        "ibge": 3550100
+      },
+      {
+        "pdv": "P5L1",
+        "cidade": "AURIFLAMA",
+        "ibge": 3504206
+      },
+      {
+        "pdv": "KBV1",
+        "cidade": "ILHABELA",
+        "ibge": 3520400
+      },
+      {
+        "pdv": "1AP6",
+        "cidade": "PITANGUEIRAS",
+        "ibge": 3539509
+      },
+      {
+        "pdv": "282U",
+        "cidade": "SANTA RITA DO PASSA QUATRO",
+        "ibge": 3547502
+      },
+      {
+        "pdv": "PE9P",
+        "cidade": "VIRADOURO",
+        "ibge": 3556800
+      },
+      {
+        "pdv": "L34L",
+        "cidade": "TUPA",
+        "ibge": 3555000
+      }
+    ],
+    "xpto_stores": [
+      {
+        "pdv": "XPTO1524",
+        "cidade": "BERTIOGA",
+        "ibge": 3506359,
+        "conceito": "C16",
+        "localidade": "SHOPPING",
+        "media_produtividade": "SEM AVALIACAO"
+      },
+      {
+        "pdv": "XPTO1547",
+        "cidade": "CARAGUATATUBA",
+        "ibge": 3510500,
+        "conceito": "C24",
+        "localidade": "SHOPPING",
+        "media_produtividade": "SEM AVALIACAO"
+      },
+      {
+        "pdv": "XPTO1578",
+        "cidade": "BARRINHA",
+        "ibge": 3505609,
+        "conceito": "C16",
+        "localidade": "RUA",
+        "media_produtividade": "SEM AVALIACAO"
+      }
+    ],
+    "stores_without_senha": [
+      {
+        "pdv": "XK3I",
+        "cidade": "IGARAPAVA",
+        "grupo": "CELLULAR.COM"
+      },
+      {
+        "pdv": "NM0R",
+        "cidade": "PIRACICABA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "PD9V",
+        "cidade": "MATAO",
+        "grupo": "CELLULAR.COM"
+      },
+      {
+        "pdv": "PT4E",
+        "cidade": "LINS",
+        "grupo": "HS TELECOM"
+      },
+      {
+        "pdv": "J1EW",
+        "cidade": "BAURU",
+        "grupo": "HS TELECOM"
+      },
+      {
+        "pdv": "ZSU5",
+        "cidade": "JARDINOPOLIS",
+        "grupo": "CELLULAR.COM"
+      },
+      {
+        "pdv": "UC1U",
+        "cidade": "OURINHOS",
+        "grupo": "DOUGLAS"
+      },
+      {
+        "pdv": "XPTO1524",
+        "cidade": "BERTIOGA",
+        "grupo": "FLEXCELL"
+      },
+      {
+        "pdv": "XPTO1547",
+        "cidade": "CARAGUATATUBA",
+        "grupo": "CELLULAR.COM"
+      },
+      {
+        "pdv": "XPTO1578",
+        "cidade": "BARRINHA",
+        "grupo": "HS TELECOM"
+      }
+    ],
+    "stores_without_fluxo": [
+      {
+        "pdv": "HFQJ",
+        "cidade": "IBITINGA",
+        "grupo": "TAMIRIS"
+      },
+      {
+        "pdv": "2VB3",
+        "cidade": "AMPARO",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "QW32",
+        "cidade": "SANTA BARBARA D OESTE",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "NM0R",
+        "cidade": "PIRACICABA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "3A1I",
+        "cidade": "INDAIATUBA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "65PG",
+        "cidade": "SANTA BARBARA D OESTE",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "7UD6",
+        "cidade": "LIMEIRA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "Q6ED",
+        "cidade": "SANTOS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "K4HP",
+        "cidade": "PIRACICABA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "5Z2B",
+        "cidade": "CAMPINAS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "QSM5",
+        "cidade": "SAO JOAO DA BOA VISTA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "60AJ",
+        "cidade": "SANTOS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "FG8V",
+        "cidade": "RIO CLARO",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "FA4O",
+        "cidade": "CAMPINAS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "D96E",
+        "cidade": "AMERICANA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "4C7D",
+        "cidade": "AGUAI",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "H0BH",
+        "cidade": "GUARUJA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "ZIK2",
+        "cidade": "CAMPINAS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "LVQB",
+        "cidade": "CAMPINAS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "69IK",
+        "cidade": "ARARAS",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "654I",
+        "cidade": "LIMEIRA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "6WG8",
+        "cidade": "MOGI GUACU",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "84Q9",
+        "cidade": "PRAIA GRANDE",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "BIVZ",
+        "cidade": "SAO VICENTE",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "MRKD",
+        "cidade": "BARIRI",
+        "grupo": "TESSAROLI"
+      },
+      {
+        "pdv": "K19U",
+        "cidade": "SAO VICENTE",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "EJFC",
+        "cidade": "ITAPIRA",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "QLEQ",
+        "cidade": "MOGI GUACU",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "QOUD",
+        "cidade": "CUBATAO",
+        "grupo": "FLEX CELL"
+      },
+      {
+        "pdv": "XPTO1524",
+        "cidade": "BERTIOGA",
+        "grupo": "FLEXCELL"
+      },
+      {
+        "pdv": "XPTO1547",
+        "cidade": "CARAGUATATUBA",
+        "grupo": "CELLULAR.COM"
+      },
+      {
+        "pdv": "XPTO1578",
+        "cidade": "BARRINHA",
+        "grupo": "HS TELECOM"
+      }
+    ],
+    "hp_livre_negative_rows": [
+      {
+        "cidade": "NOVA ODESSA",
+        "ibge": 3533403,
+        "hp_total": 14083.0,
+        "base_claro": 2647.33,
+        "base_desktop": 14531.0,
+        "hp_livre": -3095.0
+      }
+    ]
+  },
+  "method": [
+    "IBGE e a chave principal entre BASE_AA, BASE_DESKTOP, BASE_VIVO e BASE_GERAL.",
+    "Populacao, shares locais e tecnologias usam BASE_GERAL no grao municipal.",
+    "Presenca de loja AA usa BASE_AA; presenca de loja Vivo usa BASE_VIVO; lojas Desktop usam LOJA_DESKTOP.",
+    "Shares BL e POS continuam pertencendo a cidade analisada, mesmo quando nao existe loja da operadora.",
+    "HP livre com AA = HP_TOTAL - BASE_CLARO - BASE_DESKTOP. HP livre sem AA = HP_CIDADE - BASE_DESKTOP.",
+    "Distancias usam Haversine entre centroides municipais e nao representam rota rodoviaria.",
+    "Clusters usam cidades Desktop sem AA no quartil superior de distancia e conexoes de ate 35 km entre centroides.",
+    "Contexto regional do cluster lista cidades AA e Vivo a ate 75 km de qualquer cidade integrante."
+  ]
+}
