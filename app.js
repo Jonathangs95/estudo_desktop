@@ -148,66 +148,69 @@ function receptorMatch(item, query, stores=[]){
 
 const AUTH_SESSION_KEY = "canal_aa_authenticated";
 
-function LoginScreen({onLogin}){
-  const [usuario, setUsuario] = React.useState("");
-  const [senha, setSenha] = React.useState("");
-  const [error, setError] = React.useState("");
-
-  const submit = e => {
+class LoginScreen extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {usuario:"", senha:"", error:""};
+    this.submit = this.submit.bind(this);
+  }
+  submit(e){
     e.preventDefault();
+    const {usuario, senha} = this.state;
     if(usuario === "canal_aa" && senha === "canal_aa"){
       try { sessionStorage.setItem(AUTH_SESSION_KEY, "1"); } catch(_err){}
-      setError("");
-      onLogin();
+      this.setState({error:""}, this.props.onLogin);
       return;
     }
-    setError("Login ou senha incorretos.");
-  };
-
-  return h("div", {className:"login-page"},
-    h("section", {className:"login-card"},
-      h("div", {className:"login-brand"},
-        h("div", {className:"login-brand-badge"}, "AA"),
-        h("span", {className:"login-eyebrow"}, "Canal AA SPI"),
-        h("h1", null, "Estudo Desktop"),
-        h("p", null, "Ambiente de análise de cobertura, mercado e oportunidades do Canal AA."),
-        h("div", {className:"login-brand-line"})
-      ),
-      h("div", {className:"login-form-wrap"},
-        h("div", {className:"login-form-head"},
-          h("span", {className:"login-eyebrow"}, "Acesso restrito"),
-          h("h2", null, "Entrar no relatório"),
-          h("p", null, "Informe seu usuário e senha para acessar a visão principal.")
+    this.setState({error:"Login ou senha incorretos."});
+  }
+  render(){
+    const {usuario, senha, error} = this.state;
+    return h("div", {className:"login-page"},
+      h("section", {className:"login-card"},
+        h("div", {className:"login-brand"},
+          h("div", {className:"login-brand-badge"}, "AA"),
+          h("span", {className:"login-eyebrow"}, "Canal AA SPI"),
+          h("h1", null, "Estudo Desktop"),
+          h("p", null, "Ambiente de análise de cobertura, mercado e oportunidades do Canal AA."),
+          h("div", {className:"login-brand-line"})
         ),
-        h("form", {className:"login-form", onSubmit:submit},
-          h("label", null,
-            h("span", null, "Usuário"),
-            h("input", {
-              type:"text",
-              value:usuario,
-              onChange:e=>setUsuario(e.target.value),
-              autoComplete:"username",
-              autoFocus:true,
-              placeholder:"Digite seu usuário"
-            })
+        h("div", {className:"login-form-wrap"},
+          h("div", {className:"login-form-head"},
+            h("span", {className:"login-eyebrow"}, "Acesso restrito"),
+            h("h2", null, "Entrar no relatório"),
+            h("p", null, "Informe seu usuário e senha para acessar a visão principal.")
           ),
-          h("label", null,
-            h("span", null, "Senha"),
-            h("input", {
-              type:"password",
-              value:senha,
-              onChange:e=>setSenha(e.target.value),
-              autoComplete:"current-password",
-              placeholder:"Digite sua senha"
-            })
+          h("form", {className:"login-form", onSubmit:this.submit},
+            h("label", null,
+              h("span", null, "Usuário"),
+              h("input", {
+                type:"text",
+                value:usuario,
+                onChange:e=>this.setState({usuario:e.target.value}),
+                autoComplete:"username",
+                autoFocus:true,
+                placeholder:"Digite seu usuário"
+              })
+            ),
+            h("label", null,
+              h("span", null, "Senha"),
+              h("input", {
+                type:"password",
+                value:senha,
+                onChange:e=>this.setState({senha:e.target.value}),
+                autoComplete:"current-password",
+                placeholder:"Digite sua senha"
+              })
+            ),
+            error ? h("div", {className:"login-error", role:"alert"}, error) : null,
+            h("button", {type:"submit", className:"login-submit"}, "Acessar relatório")
           ),
-          error ? h("div", {className:"login-error", role:"alert"}, error) : null,
-          h("button", {type:"submit", className:"login-submit"}, "Acessar relatório")
-        ),
-        h("small", {className:"login-footnote"}, "Uso interno • Canal AA")
+          h("small", {className:"login-footnote"}, "Uso interno • Canal AA")
+        )
       )
-    )
-  );
+    );
+  }
 }
 
 function Sidebar({active, setActive, onLogout}){
