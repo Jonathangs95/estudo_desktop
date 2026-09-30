@@ -35,6 +35,8 @@ if (/\b[A-Z]:\\/i.test(dataText)) {
 const data = JSON.parse(dataText);
 const expected = {
   desktop_cidades: 173,
+  desktop_lojas: 88,
+  desktop_cidades_com_loja: 87,
   aa_lojas: 183,
   vivo_cidades: 154,
 };
@@ -42,6 +44,13 @@ const expected = {
 for (const [field, value] of Object.entries(expected)) {
   if (data.summary?.[field] !== value) {
     throw new Error(`Validacao falhou para ${field}: ${data.summary?.[field]}`);
+  }
+}
+
+for (const ibge of [3545803, 3547502]) {
+  const city = data.desktopCities?.find((row) => Number(row.ibge) === ibge);
+  if (!city || city.lojas_desktop !== 1 || city.tem_loja_desktop !== true) {
+    throw new Error(`Override LOJA_DESKTOP nao aplicado para IBGE ${ibge}.`);
   }
 }
 
