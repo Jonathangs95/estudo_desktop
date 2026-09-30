@@ -245,7 +245,7 @@ def main(config_path=None, source_dir=None) -> None:
             "FILIAL": "filial", "TERRITORIO": "territorio", "LAT": "lat_original",
             "LONG": "lon_original", "SHARE_BL_CLARO": "share_claro_bl",
             "SHARE_POS_CLARO": "share_claro_pos", "TECNOLOGIA_CLARO": "tecnologia_claro",
-            "HP_TOTAL": "hp_total", "HP_LIVRE": "hp_livre_original", "BASE_CLARO": "base_claro",
+            "BASE_CLARO": "base_claro",
         },
         {"NOME_DO_LOCAL": "nome_local", "2A_A_6A_FEIRA": "horario_semana"},
     )
@@ -255,7 +255,7 @@ def main(config_path=None, source_dir=None) -> None:
             "MUNICIPIO": "municipio", "DDD": "ddd", "AREA": "area", "IBGE": "ibge",
             "ATUACAO_DESKTOP": "atuacao_desktop", "ATUACAO_AA": "atuacao_aa",
             "LAT": "lat_original", "LONG": "lon_original", "SHARE_BL_DESKTOP": "share_desktop",
-            "BASE_DESKTOP": "base_desktop", "HP_CIDADE": "hp_cidade", "LOJA_DESKTOP": "lojas_desktop",
+            "BASE_DESKTOP": "base_desktop", "LOJA_DESKTOP": "lojas_desktop",
         },
     )
     general = rename_columns(
@@ -280,7 +280,7 @@ def main(config_path=None, source_dir=None) -> None:
     apoio.columns = ["ibge", "municipio", "ddd", "territorio", "regional", "lat", "lon"]
 
     require_columns(aa, ["pdv", "grupo", "cidade", "ibge", "share_claro_bl", "share_claro_pos", "tecnologia_claro"], "BASE_AA")
-    require_columns(desktop, ["municipio", "ibge", "share_desktop", "base_desktop", "hp_cidade", "lojas_desktop"], "BASE_DESKTOP")
+    require_columns(desktop, ["municipio", "ibge", "share_desktop", "base_desktop", "lojas_desktop"], "BASE_DESKTOP")
     require_columns(general, ["ibge", "municipio", "populacao", "share_claro_bl", "share_vivo_bl", "share_claro_pos", "share_vivo_pos"], "BASE_GERAL")
     require_columns(vivo, ["ibge", "municipio", "lojas_vivo"], "BASE_VIVO")
 
@@ -288,8 +288,8 @@ def main(config_path=None, source_dir=None) -> None:
         frame["ibge"] = pd.to_numeric(frame["ibge"], errors="coerce").astype("Int64")
 
     for frame, columns in [
-        (aa, ["m2", "share_claro_bl", "share_claro_pos", "hp_total", "hp_livre_original", "base_claro"]),
-        (desktop, ["ddd", "atuacao_desktop", "atuacao_aa", "share_desktop", "base_desktop", "hp_cidade", "lojas_desktop"]),
+        (aa, ["m2", "share_claro_bl", "share_claro_pos", "base_claro"]),
+        (desktop, ["ddd", "atuacao_desktop", "atuacao_aa", "share_desktop", "base_desktop", "lojas_desktop"]),
         (general, ["ddd", "populacao", "share_claro_bl", "share_vivo_bl", "share_desktop_bl_geral", "share_claro_pos", "share_vivo_pos", "lat", "lon"]),
         (vivo, ["lojas_vivo", "lat", "lon", "share_vivo_bl", "share_vivo_pos"]),
         (apoio, ["lat", "lon"]),
@@ -377,8 +377,8 @@ def main(config_path=None, source_dir=None) -> None:
         "horario_sabado", "horario_domingo", "fim_semana", "conceito", "quartil", "quartil_dados",
         "quartil_tv", "quartil_conta", "quartil_controle", "media_produtividade", "tipo_cabo", "gn",
         "filial", "territorio", "populacao", "faixa_pop", "segmento_porte", "abre_sabado", "abre_domingo",
-        "lat", "lon", "share_claro_bl", "share_claro_pos", "tecnologia_claro", "hp_total",
-        "hp_livre_original", "base_claro", "is_xpto", "readiness_score",
+        "lat", "lon", "share_claro_bl", "share_claro_pos", "tecnologia_claro",
+        "base_claro", "is_xpto", "readiness_score",
     ]
     for column in store_columns:
         if column not in aa.columns:
@@ -400,10 +400,8 @@ def main(config_path=None, source_dir=None) -> None:
         group = group.sort_values(["readiness_score", "m2"], ascending=[False, False])
         anchor = group.iloc[0]
         general_city = general_lookup.get(int(ibge), {}) if pd.notna(ibge) else {}
-        hp_total = group["hp_total"].max()
         base_claro = group["base_claro"].max()
         base_desktop = desktop_base_by_ibge.get(ibge)
-        hp_livre = hp_total - base_claro - (base_desktop or 0) if pd.notna(hp_total) and pd.notna(base_claro) else np.nan
         city_rows.append({
             "ibge": safe_int(ibge), "cidade": anchor["cidade"], "populacao": safe_int(general_city.get("populacao")),
             "faixa_pop": population_band(general_city.get("populacao")), "segmento_porte": general_city.get("segmento_porte"),
@@ -419,9 +417,8 @@ def main(config_path=None, source_dir=None) -> None:
             "share_claro": safe_float(general_city.get("share_claro_bl"), 6), "share_claro_bl": safe_float(general_city.get("share_claro_bl"), 6),
             "share_claro_pos": safe_float(general_city.get("share_claro_pos"), 6), "share_vivo_bl": safe_float(general_city.get("share_vivo_bl"), 6),
             "share_vivo_pos": safe_float(general_city.get("share_vivo_pos"), 6), "tecnologia_claro": general_city.get("tecnologia_claro"),
-            "tecnologia_vivo": general_city.get("tecnologia_vivo"), "base_claro": safe_float(base_claro, 2), "hp_total": safe_float(hp_total, 0),
-            "hp_livre_original": safe_float(group["hp_livre_original"].max(), 0), "hp_livre": safe_float(hp_livre, 0),
-            "hp_livre_pct": safe_float(hp_livre / hp_total, 6) if pd.notna(hp_total) and hp_total else None, "base_desktop": safe_float(base_desktop, 0),
+            "tecnologia_vivo": general_city.get("tecnologia_vivo"), "base_claro": safe_float(base_claro, 2),
+            "base_desktop": safe_float(base_desktop, 0),
             "senhas_emitidas": safe_int(group["senhas_emitidas"].sum(min_count=1)), "senhas_atendidas": safe_int(group["senhas_atendidas"].sum(min_count=1)),
             "senhas_canceladas": safe_int(group["senhas_canceladas"].sum(min_count=1)), "senhas_suspeitas": safe_int(group["senhas_suspeitas"].sum(min_count=1)),
             "fluxo_atendimentos": safe_int(group["fluxo_atendimentos"].sum(min_count=1)), "fluxo_por_loja": safe_float(group["fluxo_atendimentos"].sum(min_count=1) / len(group), 1),
@@ -466,16 +463,7 @@ def main(config_path=None, source_dir=None) -> None:
         share_desktop = safe_float(row.share_desktop, 6)
         population = safe_int(general_city.get("populacao"))
         has_aa, has_vivo = own_aa is not None, own_vivo is not None
-        if has_aa:
-            hp_total = safe_float(own_aa.get("hp_total"), 0)
-            base_claro = safe_float(own_aa.get("base_claro"), 0)
-            hp_livre = safe_float(own_aa.get("hp_livre"), 0)
-            hp_livre_pct = safe_float(own_aa.get("hp_livre_pct"), 6)
-        else:
-            hp_total = safe_float(row.hp_cidade, 0)
-            base_claro = None
-            hp_livre = safe_float(hp_total - base_desktop, 0) if hp_total is not None else None
-            hp_livre_pct = safe_float(hp_livre / hp_total, 6) if hp_total else None
+        base_claro = safe_float(own_aa.get("base_claro"), 0) if has_aa else None
         coverage = "AA + Vivo" if has_aa and has_vivo else "Somente AA" if has_aa else "Somente Vivo" if has_vivo else "Sem loja AA/Vivo"
         desktop_rows.append({
             "ibge": ibge, "municipio": clean_text(row.municipio), "ddd": safe_int(row.ddd), "area": category(row.area),
@@ -493,15 +481,14 @@ def main(config_path=None, source_dir=None) -> None:
             "tecnologia_vivo": general_city.get("tecnologia_vivo"), "base_desktop": base_desktop,
             "base_desktop_por_mil_hab": safe_float(base_desktop / population * 1000, 2) if population else None,
             "share_combinado_potencial": safe_float((safe_float(general_city.get("share_claro_bl")) or 0) + share_desktop, 6) if share_desktop is not None else None,
-            "hp_total": hp_total, "base_claro": base_claro, "hp_livre": hp_livre, "hp_livre_pct": hp_livre_pct,
+            "base_claro": base_claro,
             "cidades_aa_proximas": nearby_aa, "cidades_vivo_proximas": nearby_vivo,
             "receptor_ibge": nearest_aa.get("ibge"), "receptor_cidade": nearest_aa.get("cidade"), "distancia_receptor_km": nearest_aa.get("distancia_km"),
             "receptor_lojas": nearest_aa.get("lojas"), "receptor_lojas_rua": nearest_aa.get("lojas_rua"), "receptor_lojas_shopping": nearest_aa.get("lojas_shopping"),
             "receptor_conceitos": nearest_aa.get("conceitos"), "receptor_produtividade_mix": nearest_aa.get("produtividade_mix"),
             "receptor_m2_medio": nearest_aa.get("m2_medio"), "receptor_fim_semana_mix": nearest_aa.get("fim_semana_mix"),
             "receptor_grupos_mix": nearest_aa.get("grupos_mix"), "receptor_lojas_resumo": nearest_aa.get("lojas_resumo"),
-            "receptor_territorio": nearest_aa.get("territorio"), "receptor_hp_total": nearest_aa.get("hp_total"),
-            "receptor_hp_livre": nearest_aa.get("hp_livre"), "receptor_hp_livre_pct": nearest_aa.get("hp_livre_pct"),
+            "receptor_territorio": nearest_aa.get("territorio"),
             "receptor_base_claro": nearest_aa.get("base_claro"), "receptor_base_desktop": nearest_aa.get("base_desktop"),
             "loja_referencia_pdv": nearest_aa.get("anchor_pdv"), "loja_referencia_grupo": nearest_aa.get("anchor_grupo"),
             "loja_referencia_localidade": nearest_aa.get("anchor_localidade"), "loja_referencia_m2": nearest_aa.get("anchor_m2"),
@@ -534,7 +521,6 @@ def main(config_path=None, source_dir=None) -> None:
             "lojas": city.get("lojas"), "lojas_rua": city.get("lojas_rua"), "lojas_shopping": city.get("lojas_shopping"),
             "conceitos": city.get("conceitos"), "produtividade_mix": city.get("produtividade_mix"), "grupos_mix": city.get("grupos_mix"),
             "lojas_resumo": city.get("lojas_resumo"), "m2_medio": city.get("m2_medio"), "fim_semana_mix": city.get("fim_semana_mix"),
-            "hp_total": city.get("hp_total"), "hp_livre": city.get("hp_livre"), "hp_livre_pct": city.get("hp_livre_pct"),
             "share_claro": city.get("share_claro"), "share_claro_pos": city.get("share_claro_pos"), "share_vivo_bl": city.get("share_vivo_bl"),
             "share_vivo_pos": city.get("share_vivo_pos"), "base_claro": city.get("base_claro"), "base_desktop_cidade": city.get("base_desktop"),
             "senhas_emitidas": city.get("senhas_emitidas"), "senhas_atendidas": city.get("senhas_atendidas"), "senhas_canceladas": city.get("senhas_canceladas"),
@@ -684,7 +670,6 @@ def main(config_path=None, source_dir=None) -> None:
         "share_desktop_ponderado_com_aa": weighted_share(withaa, "share_desktop", "base_desktop"), "share_desktop_ponderado_sem_aa": weighted_share(noaa, "share_desktop", "base_desktop"),
         "share_claro_bl_pop_ponderado": weighted_share(desktop_enriched, "share_claro_bl", "populacao"), "share_vivo_bl_pop_ponderado": weighted_share(desktop_enriched, "share_vivo_bl", "populacao"),
         "share_claro_pos_pop_ponderado": weighted_share(desktop_enriched, "share_claro_pos", "populacao"), "share_vivo_pos_pop_ponderado": weighted_share(desktop_enriched, "share_vivo_pos", "populacao"),
-        "hp_total_cidades_desktop_com_aa": safe_float(withaa.drop_duplicates("ibge")["hp_total"].sum(), 0), "hp_livre_cidades_desktop_com_aa": safe_float(withaa.drop_duplicates("ibge")["hp_livre"].sum(), 0),
         "xpto_lojas": int(stores["is_xpto"].sum()), "senhas_emitidas_agosto": int(len(senha)), "senhas_atendidas_agosto": int(senha["atendida"].sum()),
         "senhas_canceladas_agosto": int((~senha["atendida"]).sum()), "senhas_suspeitas_agosto": int(senha["suspeita_menos_1min"].sum()),
         "fluxo_atendimentos_agosto": safe_int(fluxo["fluxo_atendimentos"].sum()), "desktop_base_zero": int((desktop_enriched["base_desktop"] == 0).sum()),
@@ -692,8 +677,6 @@ def main(config_path=None, source_dir=None) -> None:
     }
 
     mismatch = desktop[desktop["atuacao_aa"].fillna(-1).astype(int) != desktop["ibge"].isin(aa_codes).astype(int)]
-    hp_text = pd.read_excel(main_file, sheet_name="BASE_AA")["HP_TOTAL"]
-    hp_non_numeric = int(pd.to_numeric(hp_text, errors="coerce").isna().sum() - hp_text.isna().sum())
     quality = {
         "checks": {
             "base_aa_rows": int(len(aa)), "base_desktop_rows": int(len(desktop)), "base_geral_rows": int(len(general)), "base_vivo_rows": int(len(vivo)),
@@ -701,26 +684,22 @@ def main(config_path=None, source_dir=None) -> None:
             "vivo_unique_ibge": int(vivo["ibge"].nunique()), "general_unique_ibge": int(general["ibge"].nunique()), "desktop_atuacao_aa_mismatch": int(len(mismatch)),
             "desktop_missing_general": int((~desktop["ibge"].isin(general["ibge"])).sum()), "aa_missing_general": int((~aa["ibge"].isin(general["ibge"])).sum()),
             "vivo_missing_general": int((~vivo["ibge"].isin(general["ibge"])).sum()), "desktop_share_null": int(desktop["share_desktop"].isna().sum()),
-            "desktop_base_zero": int((desktop["base_desktop"].fillna(0) == 0).sum()), "aa_hp_total_text_rows": hp_non_numeric,
+            "desktop_base_zero": int((desktop["base_desktop"].fillna(0) == 0).sum()),
             "senha_rows": int(len(senha)), "senha_store_matches": int(stores["senhas_emitidas"].notna().sum()), "senha_store_unmatched": int(stores["senhas_emitidas"].isna().sum()),
             "fluxo_rows_valid": int(len(fluxo)), "fluxo_store_matches": int(stores["fluxo_atendimentos"].notna().sum()), "fluxo_store_unmatched": int(stores["fluxo_atendimentos"].isna().sum()),
-            "hp_livre_negative_cities": int((aa_cities["hp_livre"] < 0).sum()),
         },
         "issues": {
             "share_desktop_null_rows": desktop_enriched[desktop_enriched["share_desktop"].isna()][["municipio", "ibge", "base_desktop", "status_cobertura"]].to_dict(orient="records"),
             "base_desktop_zero_rows": desktop_enriched[desktop_enriched["base_desktop"] == 0][["municipio", "ibge", "share_desktop", "status_cobertura"]].to_dict(orient="records"),
-            "hp_total_text_rows": aa.loc[pd.to_numeric(pd.read_excel(main_file, sheet_name="BASE_AA")["HP_TOTAL"], errors="coerce").isna() & pd.read_excel(main_file, sheet_name="BASE_AA")["HP_TOTAL"].notna(), ["pdv", "cidade", "ibge"]].to_dict(orient="records"),
             "xpto_stores": stores[stores["is_xpto"]][["pdv", "cidade", "ibge", "conceito", "localidade", "media_produtividade"]].to_dict(orient="records"),
             "stores_without_senha": stores[stores["senhas_emitidas"].isna()][["pdv", "cidade", "grupo"]].to_dict(orient="records"),
             "stores_without_fluxo": stores[stores["fluxo_atendimentos"].isna()][["pdv", "cidade", "grupo"]].to_dict(orient="records"),
-            "hp_livre_negative_rows": aa_cities[aa_cities["hp_livre"] < 0][["cidade", "ibge", "hp_total", "base_claro", "base_desktop", "hp_livre"]].to_dict(orient="records"),
         },
         "method": [
             "IBGE e a chave principal entre BASE_AA, BASE_DESKTOP, BASE_VIVO e BASE_GERAL.",
             "Populacao, shares locais e tecnologias usam BASE_GERAL no grao municipal.",
             "Presenca de loja AA usa BASE_AA; presenca de loja Vivo usa BASE_VIVO; lojas Desktop usam LOJA_DESKTOP.",
             "Shares BL e POS continuam pertencendo a cidade analisada, mesmo quando nao existe loja da operadora.",
-            "HP livre com AA = HP_TOTAL - BASE_CLARO - BASE_DESKTOP. HP livre sem AA = HP_CIDADE - BASE_DESKTOP.",
             "Distancias usam Haversine entre centroides municipais e nao representam rota rodoviaria.",
             "Clusters usam cidades Desktop sem AA no quartil superior de distancia e conexoes de ate 35 km entre centroides.",
             "Contexto regional do cluster lista cidades AA e Vivo a ate 75 km de qualquer cidade integrante.",
