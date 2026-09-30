@@ -23,6 +23,7 @@ def runtime_root() -> Path:
 
 ROOT = runtime_root()
 DATA_DIR = ROOT / "data"
+PAYLOAD_DIR = DATA_DIR / "payload"
 SOURCE_DIR = ROOT / "source_working"
 CONFIG_FILE = ROOT / "dashboard_config.json"
 DEFAULT_FILES = {
@@ -144,6 +145,36 @@ def serialise(obj):
     if not isinstance(obj, (str, bool)) and pd.isna(obj):
         return None
     return obj
+
+
+
+def write_payload_parts(payload, chunk_size: int = 900_000) -> None:
+    PAYLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    for old_part in PAYLOAD_DIR.glob("desktop-impact-data.part*.txt"):
+        old_part.unlink()
+
+    compact = json.dumps(serialise(payload), ensure_ascii=False, separators=(",", ":"))
+    part_names = []
+    for index, start in enumerate(range(0, len(compact), chunk_size), start=1):
+        filename = f"desktop-impact-data.part{index:02d}.txt"
+        (PAYLOAD_DIR / filename).write_text(compact[start:start + chunk_size], encoding="utf-8")
+        part_names.append(f"payload/{filename}")
+
+    manifest = {
+        "version": 1,
+        "format": "concatenated-json",
+        "parts": part_names,
+        "desktop_lojas": payload["summary"].get("desktop_lojas"),
+        "desktop_cidades_com_loja": payload["summary"].get("desktop_cidades_com_loja"),
+    }
+    (PAYLOAD_DIR / "manifest.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+    legacy_payload = DATA_DIR / "desktop-impact-data.json"
+    if legacy_payload.exists():
+        legacy_payload.unlink()
 
 
 def load_source_paths(config_path=None, source_dir=None) -> dict[str, Path]:
@@ -721,8 +752,7 @@ def main(config_path=None, source_dir=None) -> None:
         "impactGroups": impact_groups.to_dict(orient="records"), "clusterCandidates": cluster_candidates, "top": top, "quality": quality,
     }
 
-    with (DATA_DIR / "desktop-impact-data.json").open("w", encoding="utf-8") as stream:
-        json.dump(serialise(payload), stream, ensure_ascii=False, indent=2)
+    write_payload_parts(payload)
     desktop_enriched.to_csv(DATA_DIR / "municipios_desktop_enriquecidos.csv", index=False, encoding="utf-8-sig")
     aa_cities.to_csv(DATA_DIR / "cidades_aa.csv", index=False, encoding="utf-8-sig")
     vivo_cities.to_csv(DATA_DIR / "cidades_vivo.csv", index=False, encoding="utf-8-sig")
