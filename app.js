@@ -510,9 +510,9 @@ class ImpactMap extends React.Component {
   initMap(){
     if(!this.host || !window.L || this.map) return;
     this.map = L.map(this.host, {zoomControl:true, preferCanvas:true});
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
-      attribution: "&copy; OpenStreetMap"
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(this.map);
   }
   renderLayer(){
@@ -615,7 +615,7 @@ class LayeredImpactMap extends React.Component {
   initMap(){
     if(!this.host||!window.L||this.map) return;
     this.map=L.map(this.host,{zoomControl:true,preferCanvas:true});
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"&copy; OpenStreetMap"}).addTo(this.map);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(this.map);
   }
   toggleLayer(key){
     this.setState(state=>({layers:{...state.layers,[key]:!state.layers[key]}}));
@@ -948,7 +948,7 @@ class ClusterMap extends React.Component {
   initMap(){
     if(!this.host||!window.L||this.map) return;
     this.map=L.map(this.host,{zoomControl:true,preferCanvas:true});
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"&copy; OpenStreetMap"}).addTo(this.map);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(this.map);
   }
   renderLayer(){
     if(!this.map||!window.L||!this.props.cluster) return;
