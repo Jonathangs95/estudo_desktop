@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+dist/
+source_working/
+source_copies/
