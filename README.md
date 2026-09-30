@@ -5,7 +5,7 @@ Dashboard estatico para analisar a atuacao Desktop, a capilaridade das lojas Can
 ## Estrutura
 
 - `index.html`, `app.js` e `styles.css`: aplicacao web.
-- `data/desktop-impact-data.json`: base derivada usada pelo navegador.
+- `data/payload/`: fonte derivada versionada em partes; o build monta `dist/data/desktop-impact-data.json` para o navegador.
 - `vendor/`: React e Leaflet locais, sem dependencia de CDN.
 - `scripts/`: build, validacao e servidor local da versao web.
 - `tools/`: processamento e validacao das bases de origem.
@@ -51,4 +51,4 @@ As fontes originais nao sao alteradas. Copias de trabalho ficam em `source_worki
 
 Leia [`docs/PUBLICACAO_GIT_VERCEL.md`](docs/PUBLICACAO_GIT_VERCEL.md).
 
-O JSON usado pelo painel e entregue ao navegador. Para dados corporativos, mantenha o repositorio privado e proteja o acesso ao projeto Vercel.
+O build monta o JSON final usado pelo painel e o entrega ao navegador. Para dados corporativos, mantenha o repositorio privado e proteja o acesso ao projeto Vercel.
