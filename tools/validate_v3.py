@@ -3,7 +3,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = json.loads((ROOT / "data" / "desktop-impact-data.json").read_text(encoding="utf-8"))
+MANIFEST = json.loads((ROOT / "data" / "payload" / "manifest.json").read_text(encoding="utf-8"))
+DATA = json.loads("".join(
+    (ROOT / "data" / relative_path).read_text(encoding="utf-8")
+    for relative_path in MANIFEST["parts"]
+))
 
 
 def require(condition: bool, message: str) -> None:
