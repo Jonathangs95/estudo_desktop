@@ -17,6 +17,28 @@ function fileNameOnly(value) {
   return typeof value === "string" ? path.basename(value.replaceAll("\\", "/")) : value;
 }
 
+
+function isHpKey(key) {
+  return /(^|_)hp(?:_|$)/i.test(String(key));
+}
+
+function stripHpContent(value) {
+  if (Array.isArray(value)) {
+    return value
+      .filter((item) => !(typeof item === "string" && /\bHP(?:_|\s)/i.test(item)))
+      .map(stripHpContent);
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(([key]) => !isHpKey(key))
+        .map(([key, item]) => [key, stripHpContent(item)]),
+    );
+  }
+  if (typeof value === "string" && /\bHP(?:_|\s)/i.test(value)) return null;
+  return value;
+}
+
 async function loadDesktopStoreOverrides() {
   try {
     const text = await fs.readFile(
@@ -88,9 +110,10 @@ for (const item of ["index.html", "app.js", "styles.css", "vendor"]) {
   await copy(item);
 }
 
-const sourceData = JSON.parse(
+let sourceData = JSON.parse(
   await fs.readFile(path.join(ROOT, "data", DATA_FILE), "utf8"),
 );
+sourceData = stripHpContent(sourceData);
 
 if (sourceData.summary?.source_files) {
   sourceData.summary.source_files = Object.fromEntries(
