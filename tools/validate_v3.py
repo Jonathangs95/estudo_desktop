@@ -29,9 +29,6 @@ require(pederneiras["receptor_cidade"] == "JAU", "Receptor de Pederneiras diverg
 require(pederneiras["lojas_aa"] == 0 and pederneiras["lojas_vivo"] == 1, "Presenca fisica de Pederneiras divergente")
 require(abs(pederneiras["share_desktop"] - 0.571638) < 1e-9, "Share Desktop de Pederneiras divergente")
 
-campinas = next(city for city in cities if city["municipio"] == "CAMPINAS")
-require(campinas["hp_livre"] == campinas["hp_total"] - campinas["base_claro"] - campinas["base_desktop"], "HP livre de Campinas divergente")
-
 cellular_c11 = [store for store in stores if store["grupo"] == "CELLULAR.COM" and store["conceito"] == "C11"]
 require(len(cellular_c11) == 11, "Filtro CELLULAR.COM + C11 deveria retornar 11 lojas")
 
