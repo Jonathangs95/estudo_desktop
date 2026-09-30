@@ -2,7 +2,7 @@
 
 ## Antes de publicar
 
-Este painel envia `data/desktop-impact-data.json` ao navegador. Portanto, os dados ficam acessiveis a qualquer pessoa que consiga abrir a URL. Use repositorio privado e habilite a protecao de acesso do projeto no Vercel antes de compartilhar o endereco.
+O build monta `dist/data/desktop-impact-data.json` a partir de `data/payload/` e envia esse JSON ao navegador. Portanto, os dados ficam acessiveis a qualquer pessoa que consiga abrir a URL. Use repositorio privado e habilite a protecao de acesso do projeto no Vercel antes de compartilhar o endereco.
 
 O build nao publica planilhas, executavel, PowerPoint, Word, copias de trabalho ou caminhos locais do computador.
 
@@ -48,7 +48,7 @@ No computador que possui as bases:
 ```powershell
 npm.cmd run data:update
 npm.cmd run check
-git add data/desktop-impact-data.json
+git add data/payload/ data/*.csv data/data_quality.json
 git commit -m "Atualiza dados do Estudo Desktop"
 git push
 ```
