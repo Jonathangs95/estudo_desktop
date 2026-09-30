@@ -383,8 +383,6 @@ function buildAaCities(stores, data){
       produtividade_mix:valueMix(members,"media_produtividade"),
       grupos_mix:valueMix(members,"grupo"),
       m2_medio:validM2.length ? validM2.reduce((sum,x)=>sum+x,0)/validM2.length : null,
-      hp_total:aaMaster.hp_total,
-      hp_livre:aaMaster.hp_livre,
       base_claro:aaMaster.base_claro,
       share_claro:aaMaster.share_claro,
       base_desktop:desktop ? desktop.base_desktop : null,
@@ -1110,8 +1108,6 @@ class CityTable extends React.Component {
   const sortKey = this.state.sortKey;
   const sortedRows = rows.slice().sort((a,b)=>{
     if(sortKey === "base_desc") return (Number(b.base_desktop)||0) - (Number(a.base_desktop)||0);
-    if(sortKey === "hp_total_desc") return (Number(b.hp_total)||0) - (Number(a.hp_total)||0);
-    if(sortKey === "hp_livre_desc") return (Number(b.hp_livre)||0) - (Number(a.hp_livre)||0);
     if(sortKey === "populacao_desc") return (Number(b.populacao)||0) - (Number(a.populacao)||0);
     if(sortKey === "distancia_asc") return (Number(a.distancia_receptor_km)||0) - (Number(b.distancia_receptor_km)||0);
     return String(a.municipio||"").localeCompare(String(b.municipio||""), "pt-BR");
@@ -1122,8 +1118,6 @@ class CityTable extends React.Component {
       h("div", {className:"table-actions"},
         h("label", null, h("span", null, "Ordenar por"), h("select", {value:sortKey, onChange:e=>this.setState({sortKey:e.target.value}), "aria-label":"Ordenar cidades"},
           h("option", {value:"base_desc"}, "Maior Base Desktop"),
-          h("option", {value:"hp_total_desc"}, "Maior HP total"),
-          h("option", {value:"hp_livre_desc"}, "Maior HP livre"),
           h("option", {value:"populacao_desc"}, "Maior população"),
           h("option", {value:"distancia_asc"}, "Menor distância"),
           h("option", {value:"cidade_asc"}, "Cidade A-Z")
@@ -1165,8 +1159,7 @@ class CityTable extends React.Component {
             ),
             h("td", null, h("b", null, row.receptor_conceitos), h("span", {className:"muted"}, row.receptor_produtividade_mix), h("span", {className:"muted"}, `Grupos: ${row.receptor_grupos_mix}`)),
             h("td", null,
-              h("b", null, `HP total ${fmt(row.hp_total)} | HP livre ${fmt(row.hp_livre)}`),
-              h("span", {className:"muted"}, `Base Claro ${fmt(row.base_claro)} | Base Desktop ${fmt(row.base_desktop)}`),
+              h("b", null, `Base Claro ${fmt(row.base_claro)} | Base Desktop ${fmt(row.base_desktop)}`),
               h("span", {className:"muted"}, `BL: Claro ${pct(row.share_claro_bl)} | Vivo ${pct(row.share_vivo_bl)} | Desktop ${pct(row.share_desktop)}`),
               h("span", {className:"muted"}, `Pós: Claro ${pct(row.share_claro_pos)} | Vivo ${pct(row.share_vivo_pos)} | Lojas Vivo ${fmt(row.lojas_vivo)}`),
               null
@@ -1223,8 +1216,7 @@ function WithAaPage({aaCities, onSelect}){
           h("td", null, h("b", null, city.conceitos), h("span", {className:"muted"}, city.produtividade_mix), h("span", {className:"muted"}, `Média ${fmt(city.m2_medio,1)} m²`)),
           h("td", null, h("b", null, city.grupos_mix), h("span", {className:"muted"}, `PDVs: ${city.pdvs}`)),
           h("td", null,
-            h("b", null, `HP total ${fmt(city.hp_total)} | HP livre ${fmt(city.hp_livre)}`),
-            h("span", {className:"muted"}, `Base Claro ${fmt(city.base_claro)} | BL Claro ${pct(city.share_claro_bl)}`),
+            h("b", null, `Base Claro ${fmt(city.base_claro)} | BL Claro ${pct(city.share_claro_bl)}`),
             h("span", {className:"muted"}, `Vivo ${fmt(city.lojas_vivo)} loja(s) | BL ${pct(city.share_vivo_bl)} | Pós ${pct(city.share_vivo_pos)}`)
           ),
           h("td", null,
@@ -1261,7 +1253,7 @@ function ReceptorsPage({receptors, stores, onSelect}){
           h("thead", null, h("tr", null,
             h("th", null, "Cidade com loja"), h("th", null, "População"),
             h("th", null, "Fluxo teórico"), h("th", null, "Cidades recebidas"), h("th", null, "Base / loja"),
-            h("th", null, "Lojas e grupos"), h("th", null, "Estrutura e operação"), h("th", null, "HP / Share")
+            h("th", null, "Lojas e grupos"), h("th", null, "Estrutura e operação"), h("th", null, "Mercado / Share")
           )),
           h("tbody", null,...rows.map(r => h("tr", {key:r.receptor_ibge},
             h("td", null, h("button", {className:"city-button", onClick:()=>onSelect({kind:"receptor", item:r})}, r.receptor_cidade), h("span", {className:"muted"}, `${r.territorio} | IBGE ${r.receptor_ibge}`)),
@@ -1271,7 +1263,7 @@ function ReceptorsPage({receptors, stores, onSelect}){
             h("td", null, h("b", null, fmt(r.base_sem_aa_por_loja,1)), h("span", {className:"muted"}, `${fmt(r.lojas)} loja(s) | ${fmt(r.base_desktop_total)} base total atribuída`)),
             h("td", null, h("b", null, r.lojas_resumo), h("span", {className:"muted"}, `Grupos: ${r.grupos_mix}`)),
             h("td", null, h("b", null, r.conceitos), h("span", {className:"muted"}, r.produtividade_mix),h("span",{className:"muted"},`${fmt(r.senhas_atendidas)} senhas | ${fmt(r.fluxo_atendimentos)} fluxo`)),
-            h("td", null, h("b", null, `${fmt(r.hp_livre)} livres`), h("span", {className:"muted"}, `HP total ${fmt(r.hp_total)} | Claro ${fmt(r.base_claro)} | Desktop ${fmt(r.base_desktop_cidade)} | Share Claro ${pct(r.share_claro)}`))
+            h("td", null, h("b", null, `Base Claro ${fmt(r.base_claro)} | Desktop ${fmt(r.base_desktop_cidade)}`), h("span", {className:"muted"}, `Share Claro ${pct(r.share_claro)}`))
           )))
         )
       )
@@ -1343,7 +1335,7 @@ function MethodPage({data}){
         h("div", {className:"card-head"}, h("div", null, h("h2", null, "Regras do projeto"), h("p", null, "Grãos, chaves e tratamento das fontes."))),
         h("ul", {className:"method-list"},
           h("li",null,h("b",null,"Fontes preservadas"),h("span",null,"O processo somente lê as bases originais e grava cópias de trabalho e arquivos derivados.")),
-          h("li",null,h("b",null,"Fontes municipais"),h("span",null,"BASE_GERAL fornece população, shares BL/Pós e tecnologias; BASE_DESKTOP fornece atuação, base, HP e lojas Desktop.")),
+          h("li",null,h("b",null,"Fontes municipais"),h("span",null,"BASE_GERAL fornece população, shares BL/Pós e tecnologias; BASE_DESKTOP fornece atuação, base e lojas Desktop.")),
           h("li",null,h("b",null,"Redes físicas"),h("span",null,"BASE_AA identifica cada PDV do Canal AA; BASE_VIVO informa a quantidade de lojas Vivo por cidade.")),
           h("li",null,h("b",null,"Chave municipal"),h("span",null,"Código IBGE cruza BASE_AA, BASE_DESKTOP, BASE_VIVO, BASE_GERAL e BASE_CIDADES_APOIO.")),
           h("li",null,h("b",null,"Chave de loja"),h("span",null,"PDV da BASE_AA é relacionado a AMDOCS em Senha_Ago e a Código mobile em Fluxo.")),
@@ -1355,8 +1347,6 @@ function MethodPage({data}){
       h("section", {className:"card method-card"},
         h("div", {className:"card-head"}, h("div", null, h("h2", null, "Cálculos utilizados"), h("p", null, "Fórmulas apresentadas no painel."))),
         h("div",{className:"formula-list"},
-          h("div",null,h("b",null,"HP livre em cidade com loja AA"),h("code",null,"HP_TOTAL - BASE_CLARO - BASE_DESKTOP"),h("span",null,"HP_TOTAL e BASE_CLARO vêm da BASE_AA para o mesmo IBGE.")),
-          h("div",null,h("b",null,"HP livre em cidade sem loja AA"),h("code",null,"HP_CIDADE - BASE_DESKTOP"),h("span",null,"HP_CIDADE e BASE_DESKTOP vêm da BASE_DESKTOP para o mesmo IBGE.")),
           h("div",null,h("b",null,"Share combinado potencial"),h("code",null,"SHARE_CLARO + SHARE_DESKTOP"),h("span",null,"Calculado apenas nas cidades onde as duas bases coexistem.")),
           h("div",null,h("b",null,"Base externa por loja"),h("code",null,"BASE_DESKTOP das cidades sem loja ÷ lojas na cidade AA"),h("span",null,"É uma divisão teórica igualitária, não fluxo observado.")),
           h("div",null,h("b",null,"Distância"),h("code",null,"Haversine entre centroides municipais"),h("span",null,"Não representa rota rodoviária ou tempo de viagem.")),
@@ -1369,7 +1359,6 @@ function MethodPage({data}){
         h("div", {className:"card-head"}, h("div", null, h("h2", null, "Separação entre cidade e destino"), h("p", null, "Regra de grão aplicada às cidades Desktop."))),
         h("ul", {className:"method-list"},
           h("li",null,h("b",null,"Mercado da cidade Desktop"),h("span",null,"Base Desktop e Share Desktop pertencem sempre à cidade exibida na linha.")),
-          h("li",null,h("b",null,"HP da própria cidade"),h("span",null,"Com loja AA, o HP total vem da BASE_AA. Sem loja AA, o HP total vem de HP_CIDADE na BASE_DESKTOP.")),
           h("li",null,h("b",null,"Share sem presença física"),h("span",null,"Shares Claro e Vivo vêm da BASE_GERAL mesmo quando não existe loja. A ausência de loja é mostrada separadamente.")),
           h("li",null,h("b",null,"Base Claro"),h("span",null,"É exibida quando disponível no grão municipal da BASE_AA; nunca é herdada da cidade receptora.")),
           h("li",null,h("b",null,"Cidade com loja indicada"),h("span",null,"A cidade receptora fornece apenas distância e identificação das lojas, layouts e grupos que podem receber atendimento.")),
@@ -1383,7 +1372,6 @@ function MethodPage({data}){
           h("li",null,"Demanda teórica não é previsão de visita, migração ou venda."),
           h("li",null,"Cidade mais próxima por coordenada municipal pode não ser a viagem mais curta por estrada."),
           h("li",null,"Sinal abaixo de um minuto pede auditoria de processo; não comprova irregularidade."),
-          h("li",null,"O HP livre negativo de Nova Odessa foi preservado porque resulta da fórmula informada e requer validação na origem."),
           h("li",null,"Share combinado é cenário aritmético e não considera sobreposição, churn ou comportamento pós-aquisição.")
         )
       )
@@ -1442,9 +1430,7 @@ function AaCityDetail({item}){
       ),
       h("div",{className:"detail-box"},
         h("h3",null,"Mercado local"),
-        h("div",null,h("span",null,"HP total"),h("b",null,fmt(item.hp_total))),
         h("div",null,h("span",null,"Base Claro"),h("b",null,fmt(item.base_claro))),
-        h("div",null,h("span",null,"HP livre"),h("b",null,fmt(item.hp_livre))),
         h("div",null,h("span",null,"Share Claro"),h("b",null,pct(item.share_claro))),
         h("div",null,h("span",null,"Base Desktop"),h("b",null,item.tem_desktop ? fmt(item.base_desktop) : "Sem atuação Desktop")),
         h("div",null,h("span",null,"Share Desktop"),h("b",null,item.tem_desktop ? pct(item.share_desktop) : "sem dado"))
@@ -1493,10 +1479,8 @@ function CityDetail({item, data}){
         h("div", null, h("span", null, "Share pós Claro"), h("b", null, pct(item.share_claro_pos))),
         h("div", null, h("span", null, "Share pós Vivo"), h("b", null, pct(item.share_vivo_pos))),
         h("div", null, h("span", null, "Tecnologia"), h("b", null, `Claro ${item.tecnologia_claro||"sem dado"} | Vivo ${item.tecnologia_vivo||"sem dado"}`)),
-        h("div", null, h("span", null, "HP total"), h("b", null, fmt(item.hp_total))),
         h("div", null, h("span", null, "Base Claro"), h("b", null, fmt(item.base_claro))),
         h("div", null, h("span", null, "Base Desktop"), h("b", null, fmt(item.base_desktop))),
-        h("div", null, h("span", null, "HP livre ajustado"), h("b", null, `${fmt(item.hp_livre)} (${pct(item.hp_livre_pct)})`))
       ),
       h("div", {className:"detail-box"},
         h("h3", null, item.tem_loja_aa ? "Lojas na própria cidade" : "Loja AA de referência"),
@@ -1536,10 +1520,8 @@ function ReceptorDetail({item, data}){
       ),
       h("div", {className:"detail-box"},
         h("h3", null, "Mercado e referência"),
-        h("div", null, h("span", null, "HP total"), h("b", null, fmt(item.hp_total))),
         h("div", null, h("span", null, "Base Claro"), h("b", null, fmt(item.base_claro))),
         h("div", null, h("span", null, "Base Desktop"), h("b", null, fmt(item.base_desktop_cidade))),
-        h("div", null, h("span", null, "HP livre ajustado"), h("b", null, `${fmt(item.hp_livre)} (${pct(item.hp_livre_pct)})`)),
         h("div", null, h("span", null, "Share Claro"), h("b", null, pct(item.share_claro))),
         h("div", null, h("span", null, "Maior origem"), h("b", null, `${item.maior_origem} (${fmt(item.maior_origem_base)})`)),
         h("div", null, h("span", null, "Loja ref."), h("b", null, `${item.anchor_pdv} | ${item.anchor_grupo}`)),
